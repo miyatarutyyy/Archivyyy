@@ -1,0 +1,251 @@
+<!-- src/pages/index.astro --->
+---
+type WorkItem = {
+  title: string;
+  summary: string;
+  href: string;
+  status?: "WIP" | "Stable" | "Archived";
+};
+
+type BlogItem = {
+  title: string;
+  href: string;
+  dateISO: string; //YYYY-MM-DD
+  summary?: string;
+};
+
+const featuredWorks: WorkItem[] = [];
+
+const ABOUT_HREF = "/about";
+const WORKS_HREF = "/works";
+const BLOGS_HREF = "/blogs";
+const CONTACT_HREF = "/contact";
+
+const latestBlogs: BlogItem[] = [];
+---
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Shippori+Mincho:wght@400;600&display=swap');
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;   
+    background-color: #8a0000;
+  }
+
+  body {
+    overflow: hidden; /* bodyはスクロールさせない */
+  }
+
+  /* スクロールは main に集約 */
+  #viewport {
+    height: 100vh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+
+  /* 各セクションは1画面 */
+  .page {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always; /* 可能なら「止まりやすく」 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* もし各セクションの内容が長くなるなら（推奨） */
+  .page__inner {
+    width: 100%;
+    max-width:1000px;
+    overflow: auto; /* セクション内だけスクロール */
+    padding: 2rem 1.5rem;
+  }
+
+
+  /* =========================================
+    Hero Section: 静謐な表紙
+    =========================================
+  */
+  .hero-section {
+    background-color: #8a0000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  
+
+  .hero-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: 3rem;
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 3rem; 
+    color: #fff2cc;
+    font-weight: 1000;
+    letter-spacing: 0.15em;
+    line-height: 1.6;
+    margin: 0;  
+  }
+
+  .hero-description {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.2rem;
+    font-weight: 100;
+    line-height: 2.4;
+    color: #fff2cc;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+
+  .hero-footer {
+    margin-top: 2rem;
+    font-family: 'Cinzel', serif; /* 欧文フォントで引き締める */
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+    border-top: 1px solid rgba(255,255,255,0.2); /* 唯一の装飾：細い線 */
+    padding-top: 1rem;
+    width: 100px; /* 短い線 */
+  }
+
+  .hero-link {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+  .hero-link:hover {
+    opacity: 1;
+  }
+
+  /* Worksなど他のセクション用（仮の白背景） */
+  .section-default {
+    background-color: #f9f9f9;
+    color: #333;
+  }
+</style>
+
+<!-- -------------------------------------------------------- --->
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Archivyyy</title>
+  </head>
+  <body>
+    <main id="viewport">
+      <!-- Hero -->
+      <section class="page hero-section" aria-labelledby="hero-title">
+        <div class="hero-content-wrapper">
+          <h1 id="hero-title" class="hero-title">
+	    情報系 <br/>
+	    人文学徒に <br/>
+	    なりたくて
+	  </h1>
+	  <div class="hero-description">
+            <p>
+              情報系の大学に通う「みやたるてぃ」が<br />
+	      コンピューターサイエンスを嗜みながら言語学や歴史を愛でる、<br/>
+	      そんな欲ばりな活動の軌跡が綴られたサイトです。
+            </p>
+	  </div>
+        </div>
+      </section>
+
+      <!-- Works -->
+      <section class="page" aria-labelledby="works-title">
+        <div class="page__inner">
+          <h2 id="works-title">Works</h2>
+
+          {featuredWorks.length === 0 ? (
+            <p>
+              代表作は準備中です。先に <a href={WORKS_HREF}>Works 一覧</a> をご覧ください。
+            </p>
+          ) : (
+            <ul>
+              {featuredWorks.slice(0, 3).map((w) => (
+                <li>
+                  <article>
+                    <h3><a href={w.href}>{w.title}</a></h3>
+                    {w.status ? <p aria-label="status">Status: {w.status}</p> : null}
+                    <p>{w.summary}</p>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <p><a href={WORKS_HREF}>Works をすべて見る</a></p>
+        </div>
+      </section>
+
+      <!-- Blogs -->
+      <section class="page" aria-labelledby="blogs-title">
+        <div class="page__inner">
+          <h2 id="blogs-title">Blogs</h2>
+
+          {latestBlogs.length === 0 ? (
+            <p>
+              まだ記事がありません。今後は学習と制作の記録をここに綴ります。
+              {" "}
+              <a href={BLOGS_HREF}>Blogs 一覧</a>
+            </p>
+          ) : (
+            <ul>
+              {latestBlogs.slice(0, 3).map((b) => (
+                <li>
+                  <article>
+                    <h3><a href={b.href}>{b.title}</a></h3>
+                    <p>
+                      <time datetime={b.dateISO}>{b.dateISO}</time>
+                    </p>
+                    {b.summary ? <p>{b.summary}</p> : null}
+                  </article>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <p><a href={BLOGS_HREF}>Blogs をすべて読む</a></p>
+        </div>
+      </section>
+
+      <!-- Contact --->
+      <section class="page" aria-labelledby="contact-title">
+        <div class="page__inner">
+          <h2 id="contact-title">Contact</h2>
+          <p>
+            GitHub
+            Twitter
+            Note
+            Zenn
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
