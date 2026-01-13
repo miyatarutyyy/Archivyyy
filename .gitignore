@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# --- Emacs ---
+*~              # backup
+\#*\#           # auto-save (e.g. #file#)
+.\#*            # lock files (e.g. .#file)
+*.\#*           # sometimes seen variants
