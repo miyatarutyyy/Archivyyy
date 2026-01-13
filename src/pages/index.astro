@@ -56,6 +56,9 @@ const refGroups = [
 
     --about-block-gap: 2.2rem;
     --about-heading-gap: 0.8rem;
+
+    --hero-frame-outer: rgba(255, 242, 204, 0.45);
+    --hero-frame-inner: rgba(255, 242, 204, 0.92);
   }
 
   /* 言語フォント 日：明朝体、英：装飾セリフ */
@@ -98,6 +101,8 @@ const refGroups = [
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
+    z-index: 0;
+    isolation: isolate;
   }
 
   /* 全セクション共通：背景ノイズ */
@@ -109,11 +114,11 @@ const refGroups = [
     opacity: 0.2;              /* ここで濃さ調整 */
     mix-blend-mode: overlay;    /* 既存Heroと同系統 */
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
   }
 
   /* ノイズより前面にコンテンツを出す（紙や本文が負けないように） */
-  .page > * {
+  .page > :not(.hero-frame) {
     position: relative;
     z-index: 1;
   }
@@ -126,13 +131,23 @@ const refGroups = [
     position: relative;
   }
 
-  .hero-section::after {
-    content: "";
+  .hero-frame {
     position: absolute;
     inset: 3vw;
-    border: 1px solid #fff2cc;
+    box-sizing: border-box;
+    border: 1px solid var(--hero-frame-outer);
     pointer-events: none;
     z-index: 2;
+  }
+  
+  .hero-frame::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--hero-frame-inner);
+    display: block;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1) inset;
   }
 
   .hero-content-wrapper {
@@ -154,7 +169,7 @@ const refGroups = [
     color: #fff2cc;
     font-weight: 700;
     margin: 0;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 3px 3px 9px rgba(0, 0, 0, 0.6);
   }
 
   .hero-title.is-vertical {
@@ -342,7 +357,7 @@ const refGroups = [
   .pillar-heading {
     position: relative;
     padding-left: 0.7rem; /* 柱との間隔 */
-    margin: 0 0 var(--about-heading-gap);
+    margin: 0;
     line-height: 1.4;
   }
 
@@ -363,7 +378,7 @@ const refGroups = [
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 2.2rem; /* ← §ブロック間の“規格値” */
+    gap: var(--about-block-gap);
     flex: 1;
     min-height: 0;
   }
@@ -371,7 +386,7 @@ const refGroups = [
   .about-block {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem; /* ← 見出しと本文の間隔 */
+    gap: var(--about-heading-gap);
     flex: 1;
     min-height: 0;
   }
@@ -383,28 +398,9 @@ const refGroups = [
   .about-block p {
     margin: 0;
   }
-  /* =========================================
-     About: §ブロック間隔（§1/§2/§3 ...）
-     ========================================= */
-  .about-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 1rem; /* ← §ブロック間の“規格値” */
-  }
 
-  .about-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem; /* ← 見出しと本文の間隔 */
-  }
-
-  /* ここで h3/p の個別マージンを無効化し、gapに統一 */
-  .about-block .pillar-heading {
-    margin: 0;
-  }
-  .about-block p {
-    margin: 0;
+  .about-note {
+    color: #888;
   }
 
   /* =========================================
@@ -560,6 +556,7 @@ const refGroups = [
     <main id="viewport">
       <!-- Hero -->
       <section class="page hero-section" aria-labelledby="hero-title">
+	<div class="hero-frame" aria-hidden="true"></div>
         <div class="hero-content-wrapper">
           <h1 id="hero-title" class="hero-title is-vertical">
 	    情報系 <br/>
@@ -609,7 +606,8 @@ const refGroups = [
 		もともと文系だった私は、情報系の学部に進学して理系の世界で過ごしていくうちに、<br/>
 		言葉や歴史への関心が心の中で残り続けていることに気づきました。<br/>
 		そこで「情報系人文学徒」を標榜してコンピューターサイエンスに強く、<br/>
-		言語学・歴史にも詳しい人間を目指して活動していきます
+		言語学・歴史にも詳しい人間を目指して活動していきます<br/>
+		<span class="about-note">できるかな...</span>
 	      </p>
 	    </section>
 
