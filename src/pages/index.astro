@@ -1,4 +1,5 @@
 <!-- src/pages/index.astro --->
+
 ---
 type WorkItem = {
   title: string;
@@ -15,21 +16,57 @@ type BlogItem = {
 };
 
 const featuredWorks: WorkItem[] = [];
+const latestBlogs: BlogItem[] = [];
 
-const ABOUT_HREF = "/about";
 const WORKS_HREF = "/works";
 const BLOGS_HREF = "/blogs";
-const CONTACT_HREF = "/contact";
 
-const latestBlogs: BlogItem[] = [];
+const refGroups = [
+  {
+    title: "【外部】",
+    ariaLabel: "外部リンク",
+    links: [
+      { href: "https://x.com/MIYATAstudyyyne", label: "Twitter/X", rel: "me" },
+      { href: "https://github.com/miyatarutyyy", label: "GitHub", rel: "me" },
+    ],
+  },
+  {
+    title: "【相互】",
+    ariaLabel: "相互リンク",
+    links: [
+      { href: "https://friend-a.example", label: "FriendA" },
+    ],
+  },
+];
+
 ---
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Shippori+Mincho:wght@400;600&display=swap');
+  /* フォント読み込み*/
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Shippori+Mincho:wght@400;500;700&display=swap');
 
+  
+  :root {
+    /* ノイズテクスチャ */
+    --noise-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+
+    /* フォント設定 */
+    --font-ja-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --font-en-serif: "Cinzel", "Cormorant Garamond", serif;
+  }
+
+  /* 言語フォント 日：明朝体、英：装飾セリフ */
+  :lang(ja) {
+    font-family: var(--font-ja-serif);
+  }
+  :lang(en) {
+    font-family: var(--font-en-serif);
+  }
+
+  /* 基本設定*/
   html, body {
     height: 100%;
     margin: 0;
-    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;   
+    font-family: 'Shippori Mincho', 'Yu Mincho', serif;    
     background-color: #8a0000;
   }
 
@@ -37,7 +74,7 @@ const latestBlogs: BlogItem[] = [];
     overflow: hidden; /* bodyはスクロールさせない */
   }
 
-  /* スクロールは main に集約 */
+  /* スクロール設定 */
   #viewport {
     height: 100vh;
     overflow-y: auto;
@@ -45,108 +82,296 @@ const latestBlogs: BlogItem[] = [];
     scroll-behavior: smooth;
   }
 
-  /* 各セクションは1画面 */
+  /* セクション設定 */
   .page {
-    min-height: 100vh;
+    height: 100vh; /* 1画面設定 */
+    width: 100%;
     scroll-snap-align: start;
-    scroll-snap-stop: always; /* 可能なら「止まりやすく」 */
+    scroll-snap-stop: always; 
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-  }
-
-  /* もし各セクションの内容が長くなるなら（推奨） */
-  .page__inner {
-    width: 100%;
-    max-width:1000px;
-    overflow: auto; /* セクション内だけスクロール */
-    padding: 2rem 1.5rem;
-  }
-
-
-  /* =========================================
-    Hero Section: 静謐な表紙
-    =========================================
-  */
-  .hero-section {
-    background-color: #8a0000;
-    position: relative;
+    box-sizing: border-box;
     overflow: hidden;
   }
 
-  .hero-section::before {
+  /* 全セクション共通：背景ノイズ */
+  .page::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-
-    opacity: 0.15;
-    mix-blend-mode: overlay;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; の短縮 */
+    background-image: var(--noise-texture);
+    opacity: 0.2;              /* ここで濃さ調整 */
+    mix-blend-mode: overlay;    /* 既存Heroと同系統 */
     pointer-events: none;
+    z-index: 0;
   }
-  
 
-  .hero-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    gap: 3rem;
-    max-width: 640px;
-    margin: 0 auto;
+  /* ノイズより前面にコンテンツを出す（紙や本文が負けないように） */
+  .page > * {
     position: relative;
     z-index: 1;
   }
 
-  .hero-title {
-    font-family: 'Shippori Mincho', serif;
-    font-size: 3rem; 
-    color: #fff2cc;
-    font-weight: 1000;
-    letter-spacing: 0.15em;
-    line-height: 1.6;
-    margin: 0;  
+  /* =========================================
+    Hero Section: 静謐な表紙
+    =========================================  */
+  .hero-section {
+    background-color: #8a0000;
+    position: relative;
   }
 
+  .hero-section::after {
+    content: "";
+    position: absolute;
+    inset: 3vw;
+    border: 1px solid #fff2cc;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .hero-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+    gap: 3rem;
+    max-width: 640px;
+    padding: 0 4rem;
+    position: relative;
+    z-index: 3;
+    height: 100%;
+  }
+
+  .hero-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 3.2rem; 
+    color: #fff2cc;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-title.is-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    
+    display: inline-flex;
+    gap: 0.6em;
+    line-height: 1.7;
+    letter-spacing: 0.6em;
+    white-space: nowrap;
+  }
   .hero-description {
     font-family: 'Shippori Mincho', serif;
-    font-size: 1.2rem;
-    font-weight: 100;
+    font-size: 1.1rem;
+    font-weight: 400;
     line-height: 2.4;
     color: #fff2cc;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     margin: 0;
   }
 
-  .hero-footer {
-    margin-top: 2rem;
-    font-family: 'Cinzel', serif; /* 欧文フォントで引き締める */
-    font-size: 0.8rem;
-    letter-spacing: 0.2em;
-    opacity: 0.6;
-    border-top: 1px solid rgba(255,255,255,0.2); /* 唯一の装飾：細い線 */
-    padding-top: 1rem;
-    width: 100px; /* 短い線 */
+  /* =========================================
+     Paper Layout (ベージュの紙デザイン)
+     =========================================
+  */
+  .paper-layout {
+    background-color: #F6EBD8;
+    color: #2b2b2b;
+    position: relative;
+
+    /* 面サイズに合わせて固定 */
+    width: 90vw;
+    height: 97vh;
+    
+    margin: auto;
+    padding: 2vh 4vw;
+    
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.05),
+      0 8px 32px rgba(0,0,0,0.3);
+
+    /* フレックスボックスで上下配置 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  .hero-link {
+  /* セクションヘッダー */
+  .section-header {
+    text-align: center;
+    margin-bottom: 2vh;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #8a0000;
+    margin: 0;
+    display: inline-block;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #8a0000;
+  }
+
+  .section-subtitle {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: #888;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  /* =========================================
+     Reference: section-header流用 + 色だけ差し替え
+     ========================================= */
+  .ref-section .section-title {
+    color: #fff2cc;
+    border-bottom-color: #fff2cc;
+  }
+
+  .ref-section .section-subtitle {
+    color: #fff2cc;
+    opacity: 0.85;
+  }
+
+  /* 参照の本文（リンクなど）も同系色に寄せたい場合 */
+  .ref-section,
+  .ref-section a,
+  .ref-section h3,
+  .ref-section p,
+  .ref-section li {
+    color: #fff2cc;
+  }
+
+  .ref-section a {
+    text-decoration-color: #fff2cc;
+  }
+
+  .ref-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: min(820px, 86vw);
+    margin-left:auto;
+    margin-right: auto;
+    align-items: center;
+  }
+
+  .ref-groups {
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: clamp(28px, 4vw, 84px);
+    align-items: start;
+    justify-content: center;
+  }
+
+  .ref-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.9rem;
+  }
+  .ref-links li::before {
+    content: none;
+  }
+
+  .ref-links .ref-tag {
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.95;
+  }
+
+  .empty-state {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .empty-state p {
+    text-align: center;
+    line-height: 2;
+  }
+
+  .works-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .work-item {
+    margin: 0;
+  }
+
+  .work-content {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .meta-info {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: #6f6254;
+  }
+
+  .work-title {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+  .work-title a {
     color: inherit;
     text-decoration: none;
-    transition: opacity 0.3s;
-  }
-  .hero-link:hover {
-    opacity: 1;
   }
 
-  /* Worksなど他のセクション用（仮の白背景） */
-  .section-default {
-    background-color: #f9f9f9;
-    color: #333;
+  .work-title a:hover {
+    text-decoration: underline;
   }
+
+  .work-summary {
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  .more-link-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .more-link {
+    letter-spacing: 0.12em;
+    color: #8a0000;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+  }
+
+  .more-link:hover {
+    opacity: 0.8;
+  }
+
+
 </style>
 
 <!-- -------------------------------------------------------- --->
@@ -161,7 +386,7 @@ const latestBlogs: BlogItem[] = [];
       <!-- Hero -->
       <section class="page hero-section" aria-labelledby="hero-title">
         <div class="hero-content-wrapper">
-          <h1 id="hero-title" class="hero-title">
+          <h1 id="hero-title" class="hero-title is-vertical">
 	    情報系 <br/>
 	    人文学徒に <br/>
 	    なりたくて
@@ -176,75 +401,114 @@ const latestBlogs: BlogItem[] = [];
         </div>
       </section>
 
+      <!-- About --->
+      <section class="page" aria-labelledby="about-title">
+	<div class="paper-layout">
+	  <header class="section-header">
+	    <h2 id="about-title" class="section-title">
+	      <span lang="ja">自叙</span>
+	    </h2>
+	    <span class="section-subtitle">About me</span>
+	    </header>
+	</div>
+      </section>
+      
       <!-- Works -->
       <section class="page" aria-labelledby="works-title">
-        <div class="page__inner">
-          <h2 id="works-title">Works</h2>
+	<div class="paper-layout">
+          <header class="section-header">
+	    <h2 id="works-title" class="section-title">
+	      <span lang="ja">創作</span>
+	    </h2>
+	    <span class="section-subtitle">Projects & Experiments</span>
+	  </header>
 
           {featuredWorks.length === 0 ? (
-            <p>
-              代表作は準備中です。先に <a href={WORKS_HREF}>Works 一覧</a> をご覧ください。
-            </p>
+            <div class="empty-state">
+              <p>代表作は準備中です</p>
+            </div>
           ) : (
-            <ul>
+            <ul class="works-list">
               {featuredWorks.slice(0, 3).map((w) => (
-                <li>
-                  <article>
-                    <h3><a href={w.href}>{w.title}</a></h3>
-                    {w.status ? <p aria-label="status">Status: {w.status}</p> : null}
-                    <p>{w.summary}</p>
-                  </article>
-                </li>
+                <li class="work-item">
+		  <article class="work-content">
+		    {w.status && <span class="meta-info">Status: {w.status}</span>}
+		    <h3 class="work-title"><a href={w.href}>{w.title}</a></h3>
+		    <p class="work-summary">{w.summary}</p>
+		  </article>
+		</li>
               ))}
             </ul>
           )}
 
-          <p><a href={WORKS_HREF}>Works をすべて見る</a></p>
-        </div>
+	  <div class="more-link-container">
+	    <a href={WORKS_HREF} class="more-link">
+	      <span lang="ja">全ての作品を見る</span>
+	    </a>
+	  </div>
+	</div>
       </section>
 
       <!-- Blogs -->
       <section class="page" aria-labelledby="blogs-title">
-        <div class="page__inner">
-          <h2 id="blogs-title">Blogs</h2>
+        <div class="paper-layout">
+          <header class="section-header">
+            <h2 id="blogs-title" class="section-title">
+	      <span lang="ja">稿録</span>
+	    </h2>
+            <span class="section-subtitle">Notes & Essays</span>
+          </header>
 
           {latestBlogs.length === 0 ? (
-            <p>
-              まだ記事がありません。今後は学習と制作の記録をここに綴ります。
-              {" "}
-              <a href={BLOGS_HREF}>Blogs 一覧</a>
-            </p>
+            <div class="empty-state">
+              <p>記事はまだありません</p>
+            </div>
           ) : (
-            <ul>
+            <ul class="works-list">
               {latestBlogs.slice(0, 3).map((b) => (
-                <li>
-                  <article>
-                    <h3><a href={b.href}>{b.title}</a></h3>
-                    <p>
+                <li class="work-item">
+                  <article class="work-content">
+                    <span class="meta-info">
                       <time datetime={b.dateISO}>{b.dateISO}</time>
-                    </p>
-                    {b.summary ? <p>{b.summary}</p> : null}
+                    </span>
+                    <h3 class="work-title"><a href={b.href}>{b.title}</a></h3>
+                    {b.summary ? <p class="work-summary">{b.summary}</p> : null}
                   </article>
                 </li>
               ))}
             </ul>
           )}
 
-          <p><a href={BLOGS_HREF}>Blogs をすべて読む</a></p>
+          <div class="more-link-container">
+            <a href={BLOGS_HREF} class="more-link">
+	      <span lang="ja">全ての記事を見る</span>
+	    </a>
+          </div>
         </div>
       </section>
 
-      <!-- Contact --->
-      <section class="page" aria-labelledby="contact-title">
-        <div class="page__inner">
-          <h2 id="contact-title">Contact</h2>
-          <p>
-            GitHub
-            Twitter
-            Note
-            Zenn
-          </p>
-        </div>
+      <!-- Reference --->
+      <section class="page ref-section" aria-labelledby="ref-title">
+        <div class="ref-layout">
+          <header class="section-header">
+            <h2 id="ref-title" class="section-title"><span lang="ja">参照</span></h2>
+            <span class="section-subtitle">Reference</span>
+          </header>
+	  <div class="ref-groups">
+            {refGroups.map((group) => (
+              <ul class="ref-links" aria-label={group.ariaLabel} key={group.title}> 
+                <li class="ref-tag">{group.title}</li>
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <a href={link.href} rel={link.rel ?? undefined}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ))}
+	  </div>
+	</div>
       </section>
     </main>
   </body>
