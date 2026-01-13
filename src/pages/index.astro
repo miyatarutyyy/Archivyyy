@@ -52,6 +52,10 @@ const refGroups = [
     /* フォント設定 */
     --font-ja-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
     --font-en-serif: "Cinzel", "Cormorant Garamond", serif;
+    --paper-body-size: clamp(1.02rem, 1.05vw, 1.12rem);
+
+    --about-block-gap: 2.2rem;
+    --about-heading-gap: 0.8rem;
   }
 
   /* 言語フォント 日：明朝体、英：装飾セリフ */
@@ -181,8 +185,10 @@ const refGroups = [
     background-color: rgba(246, 235, 216, 0.92);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
+
+    font-size: var(--paper-body-size);
     
-    color: #2b2b2b;
+    color: #333333;
     position: relative;
 
     /* 面サイズに合わせて固定 */
@@ -196,15 +202,15 @@ const refGroups = [
     overflow-y: auto;
 
     box-shadow:
-      0 1px 2px rgba(0,0,0,0.05),
-      0 8px 32px rgba(0,0,0,0.3);
+      inset 25px 0 40px -10px rgba(0, 0, 0, 0.1), /* ノド（綴じ代）の影 */
+      0 10px 20px rgba(0, 0, 0, 0.15);            /* 全体の影 */
 
     border: 1px solid rgba(0, 0, 0, 0.1);
 
     /* フレックスボックスで上下配置 */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .paper-layout::before {
@@ -231,6 +237,60 @@ const refGroups = [
     position: relative;
     z-index: 1;
   }
+
+  .paper-layout p {
+    font-size: 1em;        
+    font-weight: 500;
+    line-height: 2.15;
+    letter-spacing: 0.02em;
+    margin: 0.8rem 0;
+  }
+
+  .paper-layout .pillar-heading + p {
+    margin-top: 0.55rem;
+  }
+
+  /* =========================================
+     About §1: 挨拶文 + ロゴ（右寄せ）
+     ========================================= */
+  .intro-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3rem;
+    min-height: 8em;
+  }
+
+  .intro-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .intro-logo {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    width: 180px;
+    max-width: 30%;
+    object-fit: contain;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  /* 狭い画面では縦積み */
+  @media (max-width: 640px) {
+    .intro-row {
+      flex-direction: column;
+      align-items: center;
+      min-height: auto;
+    }
+    .intro-logo {
+      width: min(240px, 70vw);
+      height: auto;
+    }
+  }
+
   
 
   /* セクションヘッダー */
@@ -244,7 +304,7 @@ const refGroups = [
     font-family: 'Cinzel', serif;
     font-size: 2.5rem;
     font-weight: 500;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     color: #8a0000;
     margin: 0;
     display: inline-block;
@@ -254,12 +314,97 @@ const refGroups = [
 
   .section-subtitle {
     display: block;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     letter-spacing: 0.15em;
     color: #888;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
+  }
+
+  .about-header::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #888;
+    margin: 0.6rem auto 0.6rem;
+  }
+
+  .about-header .section-title {
+    width: 100%;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* =========================================
+     About: 見出し左の「柱」
+     ========================================= */
+  .pillar-heading {
+    position: relative;
+    padding-left: 0.7rem; /* 柱との間隔 */
+    margin: 0 0 var(--about-heading-gap);
+    line-height: 1.4;
+  }
+
+  .pillar-heading::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.16em; /* 文字の中心に寄せる */
+    width: 3px;  /* 柱の太さ */
+    height: calc(100% - 0.3em); /* 1行でも複数行でも追従 */
+    background: rgb(138, 0, 0); 
+  }
+
+  /* =========================================
+     About: §ブロック間隔（§1/§2/§3 ...）
+     ========================================= */
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.2rem; /* ← §ブロック間の“規格値” */
+    flex: 1;
+    min-height: 0;
+  }
+
+  .about-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem; /* ← 見出しと本文の間隔 */
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ここで h3/p の個別マージンを無効化し、gapに統一 */
+  .about-block .pillar-heading {
+    margin: 0;
+  }
+  .about-block p {
+    margin: 0;
+  }
+  /* =========================================
+     About: §ブロック間隔（§1/§2/§3 ...）
+     ========================================= */
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem; /* ← §ブロック間の“規格値” */
+  }
+
+  .about-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem; /* ← 見出しと本文の間隔 */
+  }
+
+  /* ここで h3/p の個別マージンを無効化し、gapに統一 */
+  .about-block .pillar-heading {
+    margin: 0;
+  }
+  .about-block p {
+    margin: 0;
   }
 
   /* =========================================
@@ -402,7 +547,6 @@ const refGroups = [
     opacity: 0.8;
   }
 
-
 </style>
 
 <!-- -------------------------------------------------------- --->
@@ -423,11 +567,8 @@ const refGroups = [
 	    なりたくて
 	  </h1>
 	  <div class="hero-description">
-            <p>
-              情報系の大学に通う「みやたるてぃ」が<br />
-	      コンピューターサイエンスを嗜みながら言語学や歴史を愛でる、<br/>
-	      そんな欲ばりな活動の軌跡が綴られたサイトです。
-            </p>
+            <p>Archivyyy</p>
+	    <p>みやたるてぃのウェブサイト</p>
 	  </div>
         </div>
       </section>
@@ -435,12 +576,52 @@ const refGroups = [
       <!-- About --->
       <section class="page" aria-labelledby="about-title">
 	<div class="paper-layout">
-	  <header class="section-header">
+	  <header class="section-header about-header">
 	    <h2 id="about-title" class="section-title">
 	      <span lang="ja">自叙</span>
 	    </h2>
 	    <span class="section-subtitle">About me</span>
-	    </header>
+	  </header>
+
+	  <div class="about-body">
+	    <section class="about-block" aria-labelledby="about-s1">
+	      <h3 id="about-s1" class="pillar-heading">§1. ごあいさつ</h3>
+	      <div class="intro-row">
+		<p class="intro-text">
+		  情報系の大学に通う学生、みやたるてぃです。
+		  大学進学を機にプログラミングを触りはじめ、
+		  現在は Linux と Emacs をいじっています。
+		  また読書が趣味で、岩波ジュニア新書、
+		  ちくまプリマー新書を通学中に読むのが幸せです。  
+		</p>
+		<img
+		  class="intro-logo"
+		  src="/miyatarutyyy_logo_transparent.png"
+		  alt="みやたるてぃ のロゴ"
+		  loading="lazy"
+		/>
+	      </div>
+	    </section>
+
+	    <section class="about-block" aria-labelledby="about-s2">
+	      <h3 id="about-s2" class="pillar-heading">§2. 情報系人文学徒とは</h3>
+	      <p>
+		もともと文系だった私は、情報系の学部に進学して理系の世界で過ごしていくうちに、<br/>
+		言葉や歴史への関心が心の中で残り続けていることに気づきました。<br/>
+		そこで「情報系人文学徒」を標榜してコンピューターサイエンスに強く、<br/>
+		言語学・歴史にも詳しい人間を目指して活動していきます
+	      </p>
+	    </section>
+
+	    <section class="about-block" aria-labelledby="about-s3">
+	      <h3 id="about-s3" class="pillar-heading">§3. Archivyyy について</h3>
+	      <p>
+		コンピューターサイエンスを嗜みながら言語学や歴史を愛でる<br/>
+		当サイト"Archivyyy"は、そんな欲ばりな思考と活動の軌跡を記録するための<br/>
+		みやたるてぃ (Miyatarutyyy) のための保管庫 (Archive)となるサイトです
+	      </p>
+	    </section>
+	  </div>
 	</div>
       </section>
       
