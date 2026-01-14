@@ -1,3 +1,4 @@
+
 <!-- src/pages/index.astro --->
 
 ---
@@ -26,18 +27,41 @@ const refGroups = [
     title: "【外部】",
     ariaLabel: "外部リンク",
     links: [
-      { href: "https://x.com/MIYATAstudyyyne", label: "Twitter/X", rel: "me" },
-      { href: "https://github.com/miyatarutyyy", label: "GitHub", rel: "me" },
+      {
+        href: "https://x.com/MIYATAstudyyyne",
+        label: "Twitter / X",
+        desc: "@MIYATAstudyyyne",
+        rel: "me",
+        icon: "x",
+      },
+      {
+        href: "https://github.com/miyatarutyyy",
+        label: "GitHub",
+        desc: "@miyatarutyyy",
+        rel: "me",
+        icon: "github",
+      },
     ],
   },
   {
     title: "【相互】",
     ariaLabel: "相互リンク",
     links: [
-      { href: "https://friend-a.example", label: "FriendA" },
+      {
+        href: "https://friend-a.example",
+        label: "Comming soon",
+        desc: "Technology & Arts Blog",
+        icon: "globe",
+      },
     ],
   },
 ];
+
+const refIcons: Record<string, string> = {
+  x: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+  github: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>`,
+  globe: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`,
+};
 
 ---
 <style>
@@ -59,6 +83,11 @@ const refGroups = [
 
     --hero-frame-outer: rgba(255, 242, 204, 0.45);
     --hero-frame-inner: rgba(255, 242, 204, 0.92);
+
+    /* Reference用カラー */
+    --c-text-beige: #fff2cc;
+    --c-gold: #c5a059;
+    --c-line-light: rgba(255, 242, 204, 0.3);
   }
 
   /* 言語フォント 日：明朝体、英：装飾セリフ */
@@ -111,7 +140,7 @@ const refGroups = [
     position: absolute;
     inset: 0; /* top:0; right:0; bottom:0; left:0; の短縮 */
     background-image: var(--noise-texture);
-    opacity: 0.2;              /* ここで濃さ調整 */
+    opacity: 0.1;              /* ここで濃さ調整 */
     mix-blend-mode: overlay;    /* 既存Heroと同系統 */
     pointer-events: none;
     z-index: -1;
@@ -407,69 +436,154 @@ const refGroups = [
      Reference: section-header流用 + 色だけ差し替え
      ========================================= */
   .ref-section .section-title {
-    color: #fff2cc;
-    border-bottom-color: #fff2cc;
+    color: var(--c-text-beige);
+    border-bottom-color: var(--c-text-beige);
   }
 
   .ref-section .section-subtitle {
-    color: #fff2cc;
+    color: var(--c-text-beige);
     opacity: 0.85;
   }
 
   /* 参照の本文（リンクなど）も同系色に寄せたい場合 */
-  .ref-section,
+  .ref-section { color: var(--c-text-beige); }
   .ref-section a,
-  .ref-section h3,
   .ref-section p,
   .ref-section li {
-    color: #fff2cc;
+    color: inherit;
   }
 
-  .ref-section a {
-    text-decoration-color: #fff2cc;
+  /* 外部/相互の見出しは黄金（ここで上書きを確定させる） */
+  .ref-section .ref-group-title {
+    color: var(--c-gold);
+  }
+  .ref-section .section-header {
+    margin-bottom: 2.2rem;
   }
 
   .ref-layout {
+    max-width: 900px;
+    width: 100%;
+    padding: 0 2rem;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    width: min(820px, 86vw);
-    margin-left:auto;
-    margin-right: auto;
     align-items: center;
   }
 
-  .ref-groups {
-    display: grid;
-    grid-auto-flow: row;
-    row-gap: clamp(28px, 4vw, 84px);
-    align-items: start;
-    justify-content: center;
-  }
-
-  .ref-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-
+  /* モックの「2つの塊」を縦に、間隔大きめ */
+  .ref-grid {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 0.9rem;
-  }
-  .ref-links li::before {
-    content: none;
+    gap: 3.5rem;
+    margin-top: 1.8rem;
+    width: 100%;
+    max-width: 500px;
   }
 
-  .ref-links .ref-tag {
-    letter-spacing: 0.12em;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0.95;
+  .ref-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
   }
+
+  .ref-group-title {
+    font-family: var(--font-ja-serif);
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    color: var(--c-gold);
+    margin: 0;
+    text-align: center;
+   }  
+  
+  .ref-group-title::before,
+  .ref-group-title::after {
+    content: "—";
+    opacity: 0.7;
+  }
+  .ref-group-title::before { margin-right: 0.6em; }
+  .ref-group-title::after  { margin-left: 0.6em; }
+
+  .ref-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  /* カード本体 */
+  .ref-item {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--c-text-beige);
+    padding: 0;
+    border-bottom: 3px solid var(--c-line-light);
+    border-left: 3px solid var(--c-line-light);
+    background: rgba(138, 0, 0, 0.6);
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+                border-color 0.3s ease;
+  }
+  .ref-item:hover {
+    transform: scale(1.03);
+    border-color: rgba(255, 242, 204, 0.8);
+  }
+
+  .ref-info {
+    flex: 1;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .ref-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    font-weight: 100;
+  }
+  .ref-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  .ref-icon-box {
+    position: relative;
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
+    width: clamp(110px, 10vw, 160px);
+    border-right: 0px solid var(--c-line-light);
+    background-color: rgba(0, 0, 0, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s ease;
+  }
+  .ref-item:hover .ref-icon-box {
+    border-color: rgba(255, 242, 204, 0.8);
+   }
+
+  .ref-icon-box :global(svg) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 40%;
+    fill: var(--c-text-beige);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .ref-item:hover .ref-icon-box :global(svg) {
+    opacity: 1;
+   }
 
   .empty-state {
     flex-grow: 1;
@@ -704,21 +818,31 @@ const refGroups = [
             <h2 id="ref-title" class="section-title"><span lang="ja">参照</span></h2>
             <span class="section-subtitle">Reference</span>
           </header>
-	  <div class="ref-groups">
+          <div class="ref-grid">
             {refGroups.map((group) => (
-              <ul class="ref-links" aria-label={group.ariaLabel} key={group.title}> 
-                <li class="ref-tag">{group.title}</li>
-                {group.links.map((link) => (
-                  <li key={link.href}>
-                    <a href={link.href} rel={link.rel ?? undefined}>
-                      {link.label}
+              <div class="ref-group" aria-label={group.ariaLabel} key={group.title}>
+                <h3 class="ref-group-title">{group.title.replace(/[【】]/g, "")}</h3>
+                <div class="ref-list">
+                  {group.links.map((link) => (
+                    <a
+                      class="ref-item"
+                      href={link.href}
+                      rel={link.rel ?? undefined}
+                      target={link.href.startsWith("http") ? "_blank" : undefined}
+                      key={link.href}
+                    >
+                      <div class="ref-info">
+                        <span class="ref-name">{link.label}</span>
+                        {link.desc ? <span class="ref-desc">{link.desc}</span> : null}
+                      </div>
+                      <div class="ref-icon-box" set:html={refIcons[link.icon ?? "globe"]}></div>
                     </a>
-                  </li>
-                ))}
-              </ul>
+                  ))}
+                </div>
+              </div>
             ))}
-	  </div>
-	</div>
+          </div>
+        </div>
 	</section>
     </main>
   </body>
