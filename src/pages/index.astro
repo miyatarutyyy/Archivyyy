@@ -48,8 +48,8 @@ const refGroups = [
     ariaLabel: "相互リンク",
     links: [
       {
-        href: "https://friend-a.example",
-        label: "Comming soon",
+        href: "",
+        label: "Friend A",
         desc: "Technology & Arts Blog",
         icon: "globe",
       },
@@ -215,10 +215,24 @@ const refIcons: Record<string, string> = {
     font-family: 'Shippori Mincho', serif;
     font-size: 1.1rem;
     font-weight: 400;
-    line-height: 2.4;
+    line-height: 1.3;
     color: #fff2cc;
     letter-spacing: 0.1em;
     margin: 0;
+    text-align: center;
+  }
+  .hero-description .hero-divider {
+    display: block;
+    width: min(240px, 60vw);
+    height: 1px;
+    margin: 0.7rem auto;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 242, 204, 0.2) 0%,
+      rgba(255, 242, 204, 0.85) 50%,
+      rgba(255, 242, 204, 0.2) 100%
+    );
+    border-radius: 999px;
   }
 
   /* =========================================
@@ -438,11 +452,14 @@ const refIcons: Record<string, string> = {
   .ref-section .section-title {
     color: var(--c-text-beige);
     border-bottom-color: var(--c-text-beige);
+    display: block;
+    width: min(520px, 30vw);
   }
 
   .ref-section .section-subtitle {
     color: var(--c-text-beige);
     opacity: 0.85;
+    margin-top: 0.6rem;
   }
 
   /* 参照の本文（リンクなど）も同系色に寄せたい場合 */
@@ -458,7 +475,7 @@ const refIcons: Record<string, string> = {
     color: var(--c-gold);
   }
   .ref-section .section-header {
-    margin-bottom: 2.2rem;
+    margin-bottom: 1rem;
   }
 
   .ref-layout {
@@ -491,7 +508,7 @@ const refIcons: Record<string, string> = {
   .ref-group-title {
     font-family: var(--font-ja-serif);
     font-size: 1.2rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.25em;
     color: var(--c-gold);
     margin: 0;
     text-align: center;
@@ -679,6 +696,7 @@ const refIcons: Record<string, string> = {
 	  </h1>
 	  <div class="hero-description">
             <p>Archivyyy</p>
+	    <span class="hero-divider" aria-hidden="true"></span>
 	    <p>みやたるてぃのウェブサイト</p>
 	  </div>
         </div>
@@ -740,7 +758,7 @@ const refIcons: Record<string, string> = {
       <!-- Works -->
       <section class="page" aria-labelledby="works-title">
 	<div class="paper-layout">
-          <header class="section-header">
+          <header class="section-header about-header">
 	    <h2 id="works-title" class="section-title">
 	      <span lang="ja">創作</span>
 	    </h2>
@@ -776,7 +794,7 @@ const refIcons: Record<string, string> = {
       <!-- Blogs -->
       <section class="page" aria-labelledby="blogs-title">
         <div class="paper-layout">
-          <header class="section-header">
+          <header class="section-header about-header">
             <h2 id="blogs-title" class="section-title">
 	      <span lang="ja">稿録</span>
 	    </h2>
