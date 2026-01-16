@@ -1,7 +1,7 @@
-
-<!-- src/pages/index.astro --->
-
+<!-- src/pages/index.astro ---> 
 ---
+import { refGroups } from "../data/refGroups";
+
 type WorkItem = {
   title: string;
   summary: string;
@@ -21,41 +21,6 @@ const latestBlogs: BlogItem[] = [];
 
 const WORKS_HREF = "/works";
 const BLOGS_HREF = "/blogs";
-
-const refGroups = [
-  {
-    title: "【外部】",
-    ariaLabel: "外部リンク",
-    links: [
-      {
-        href: "https://x.com/MIYATAstudyyyne",
-        label: "Twitter / X",
-        desc: "@MIYATAstudyyyne",
-        rel: "me",
-        icon: "x",
-      },
-      {
-        href: "https://github.com/miyatarutyyy",
-        label: "GitHub",
-        desc: "@miyatarutyyy",
-        rel: "me",
-        icon: "github",
-      },
-    ],
-  },
-  {
-    title: "【相互】",
-    ariaLabel: "相互リンク",
-    links: [
-      {
-        href: "",
-        label: "Friend A",
-        desc: "Technology & Arts Blog",
-        icon: "globe",
-      },
-    ],
-  },
-];
 
 const refIcons: Record<string, string> = {
   x: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
