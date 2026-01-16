@@ -1,4 +1,5 @@
 // @ts-check
+// astro.config.mjs
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
