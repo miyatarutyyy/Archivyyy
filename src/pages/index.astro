@@ -200,6 +200,91 @@ const refIcons: Record<string, string> = {
     border-radius: 999px;
   }
 
+/* =========================================
+   Bookmark Scroll (スクロール誘導)
+   - 線上を点が“落ちる” + 下向き矢印が“呼吸”する
+   ========================================= */
+.bookmark-scroll {
+  margin-top: 1.1rem;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.75rem;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+/* 小さな欧文Serifのラベル */
+.bookmark-scroll__label {
+  font-family: var(--font-en-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-text-beige);
+  opacity: 0.9;
+}
+
+/* 縦線＋矢印を縦に積む */
+.bookmark-scroll__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 縦ライン（薄い“レール”） */
+.bookmark-scroll__line {
+  width: 2px;
+  height: 60px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 242, 204, 0.22);
+}
+
+/* 落ちる点（しずく） */
+.bookmark-scroll__line::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+
+  background: rgba(255, 242, 204, 0.95);
+  box-shadow:
+    0 0 0 4px rgba(255, 242, 204, 0.18),
+    0 6px 10px rgba(0, 0, 0, 0.25);
+
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: scroll-drop 1.75s ease-in-out infinite;
+}
+
+@keyframes scroll-drop {
+  0%   { transform: translate(-50%, -18px); opacity: 0; }
+  15%  { opacity: 1; }
+  70%  { transform: translate(-50%, 76px); opacity: 1; }
+  100% { transform: translate(-50%, 76px); opacity: 0; }
+}
+
+@keyframes arrow-breathe {
+  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.65; }
+  50%      { transform: rotate(45deg) translateY(2px); opacity: 0.95; }
+}
+
+/* 動きを止めたい環境への配慮 */
+@media (prefers-reduced-motion: reduce) {
+  .bookmark-scroll__line::after,
+  .bookmark-scroll__arrow {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
+
   /* =========================================
      Paper Layout (ベージュの紙デザイン)
      =========================================
@@ -663,6 +748,11 @@ const refIcons: Record<string, string> = {
             <p>Archivyyy</p>
 	    <span class="hero-divider" aria-hidden="true"></span>
 	    <p>みやたるてぃのウェブサイト</p>
+	    <div class="bookmark-scroll" aria-hidden="true">
+	      <span class="bookmark-scroll__stack" aria-hidden="true">
+		<span class="bookmark-scroll__line"></span>
+	      </span>
+	    </div>
 	  </div>
         </div>
       </section>
