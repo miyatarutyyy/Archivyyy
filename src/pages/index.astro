@@ -6,6 +6,7 @@ import { refIcons } from "../data/refIcons";
 
 import HeroSection from "../components/HeroSection.astro";
 import AboutSection from "../components/AboutSection.astro";
+import WorksSection from "../components/WorksSection.astro";
 
 const featuredWorks: WorkItem[] = [];
 const latestBlogs: BlogItem[] = [];
@@ -503,41 +504,10 @@ const BLOGS_HREF = "/blogs";
       <!-- About --->
       <AboutSection />
       <!-- Works -->
-      <section class="page" aria-labelledby="works-title">
-	<div class="paper-layout">
-          <header class="section-header about-header">
-	    <h2 id="works-title" class="section-title">
-	      <span lang="ja">創作</span>
-	    </h2>
-	    <span class="section-subtitle">Projects & Experiments</span>
-	  </header>
-
-          {featuredWorks.length === 0 ? (
-            <div class="empty-state">
-              <p>代表作は準備中です</p>
-            </div>
-          ) : (
-            <ul class="works-list">
-              {featuredWorks.slice(0, 3).map((w) => (
-                <li class="work-item">
-		  <article class="work-content">
-		    {w.status && <span class="meta-info">Status: {w.status}</span>}
-		    <h3 class="work-title"><a href={w.href}>{w.title}</a></h3>
-		    <p class="work-summary">{w.summary}</p>
-		  </article>
-		</li>
-              ))}
-            </ul>
-          )}
-
-	  <div class="more-link-container">
-	    <a href={WORKS_HREF} class="more-link">
-	      <span lang="ja">全ての作品を見る</span>
-	    </a>
-	  </div>
-	</div>
-      </section>
-
+      <WorksSection
+	featuredWorks={featuredWorks}
+	worksHref={WORKS_HREF}
+      />
       <!-- Blogs -->
       <section class="page" aria-labelledby="blogs-title">
         <div class="paper-layout">

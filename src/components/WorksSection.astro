@@ -1,0 +1,122 @@
+<!-- src/components/WorksSection.astro --->
+---
+import type { WorkItem } from "../types/content";
+
+type Props = {
+  featuredWorks: WorkItem[];
+  worksHref: string;
+};
+
+const { featuredWorks, worksHref } = Astro.props;
+---
+<style>
+  /* WorksSection scoped styles (Works 内だけに効かせる) */
+
+  .works-section .empty-state {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .works-section .empty-state p {
+    text-align: center;
+    line-height: 2;
+  }
+
+  .works-section .works-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .works-section .work-item {
+    margin: 0;
+  }
+
+  .works-section .work-content {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .works-section .meta-info {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: #6f6254;
+  }
+
+  .works-section .work-title {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+  .works-section .work-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .works-section .work-title a:hover {
+    text-decoration: underline;
+  }
+
+  .works-section .work-summary {
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  .works-section .more-link-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .works-section .more-link {
+    letter-spacing: 0.12em;
+    color: #8a0000;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.2rem;
+  }
+
+  .works-section .more-link:hover {
+    opacity: 0.8;
+  }
+</style>
+
+<section class="page works-section" aria-labelledby="works-title">
+  <div class="paper-layout">
+    <header class="section-header about-header">
+      <h2 id="works-title" class="section-title">
+        <span lang="ja">創作</span>
+      </h2>
+      <span class="section-subtitle">Projects &amp; Experiments</span>
+    </header>
+
+    {featuredWorks.length === 0 ? (
+      <div class="empty-state">
+        <p>代表作は準備中です</p>
+      </div>
+    ) : (
+      <ul class="works-list">
+        {featuredWorks.slice(0, 3).map((w) => (
+          <li class="work-item">
+            <article class="work-content">
+              {w.status && <span class="meta-info">Status: {w.status}</span>}
+              <h3 class="work-title"><a href={w.href}>{w.title}</a></h3>
+              <p class="work-summary">{w.summary}</p>
+            </article>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <div class="more-link-container">
+      <a href={worksHref} class="more-link">
+        <span lang="ja">全ての作品を見る</span>
+      </a>
+    </div>
+  </div>
+</section>
