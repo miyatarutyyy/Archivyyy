@@ -1,0 +1,49 @@
+<!-- src/components/NotesSection.astro --->
+---
+import type { BlogItem } from "../types/content";
+
+type Props = {
+  latestBlogs: BlogItem[];
+  blogsHref: string; // 例: "/blogs"
+};
+
+const { latestBlogs, blogsHref } = Astro.props;
+---
+
+<section class="page" aria-labelledby="blogs-title">
+  <div class="paper-layout">
+    <header class="section-header about-header">
+      <h2 id="blogs-title" class="section-title">
+        <span lang="ja">稿録</span>
+      </h2>
+      <span class="section-subtitle">Notes & Essays</span>
+    </header>
+
+    {latestBlogs.length === 0 ? (
+      <div class="empty-state">
+        <p>記事はまだありません</p>
+      </div>
+    ) : (
+      <ul class="works-list">
+        {latestBlogs.slice(0, 3).map((b) => (
+          <li class="work-item">
+            <article class="work-content">
+              <span class="meta-info">
+                <time datetime={b.dateISO}>{b.dateISO}</time>
+              </span>
+              <h3 class="work-title"><a href={b.href}>{b.title}</a></h3>
+              {b.summary ? <p class="work-summary">{b.summary}</p> : null}
+            </article>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <div class="more-link-container">
+      <a href={blogsHref} class="more-link">
+        <span lang="ja">全ての記事を見る</span>
+      </a>
+    </div>
+  </div>
+</section>
+
