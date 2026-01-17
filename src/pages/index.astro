@@ -5,6 +5,7 @@ import type { WorkItem, BlogItem } from "../types/content";
 import { refIcons } from "../data/refIcons";
 
 import HeroSection from "../components/HeroSection.astro";
+import AboutSection from "../components/AboutSection.astro";
 
 const featuredWorks: WorkItem[] = [];
 const latestBlogs: BlogItem[] = [];
@@ -13,7 +14,7 @@ const WORKS_HREF = "/works";
 const BLOGS_HREF = "/blogs";
 
 ---
-<style>
+<style is:global>
   /* === TOKENS ============================================== */
   :root {
     /* ノイズテクスチャ */
@@ -235,102 +236,6 @@ const BLOGS_HREF = "/blogs";
   }
   
   /* === SECTIONS ============================================ */
-  /* =========================================
-     cAbout §1: 挨拶文 + ロゴ（右寄せ）
-     ========================================= */
-  .intro-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 3rem;
-    min-height: 8em;
-  }
-
-  .intro-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .intro-logo {
-    aspect-ratio: 1 / 1;
-    height: auto;
-    width: 180px;
-    max-width: 30%;
-    object-fit: contain;
-    margin-left: 0;
-    flex-shrink: 0;
-  }
-
-  /* 狭い画面では縦積み */
-  @media (max-width: 640px) {
-    .intro-row {
-      flex-direction: column;
-      align-items: center;
-      min-height: auto;
-    }
-    .intro-logo {
-      width: min(240px, 70vw);
-      height: auto;
-    }
-  }
-
-  
-
-  
-
-  /* =========================================
-     About: 見出し左の「柱」
-     ========================================= */
-  .pillar-heading {
-    position: relative;
-    padding-left: 0.7rem; /* 柱との間隔 */
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  .pillar-heading::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.16em; /* 文字の中心に寄せる */
-    width: 3px;  /* 柱の太さ */
-    height: calc(100% - 0.3em); /* 1行でも複数行でも追従 */
-    background: rgb(138, 0, 0); 
-  }
-
-  /* =========================================
-     About: §ブロック間隔（§1/§2/§3 ...）
-     ========================================= */
-  .about-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--about-block-gap);
-    flex: 1;
-    min-height: 0;
-  }
-
-  .about-block {
-    display: flex;
-    flex-direction: column;
-    gap: var(--about-heading-gap);
-    flex: 1;
-    min-height: 0;
-  }
-
-  /* ここで h3/p の個別マージンを無効化し、gapに統一 */
-  .about-block .pillar-heading {
-    margin: 0;
-  }
-  .about-block p {
-    margin: 0;
-  }
-
-  .about-note {
-    color: #888;
-  }
   
 
   /* ref */
@@ -596,57 +501,7 @@ const BLOGS_HREF = "/blogs";
 	tagline="みやたるてぃのウェブサイト"
       />
       <!-- About --->
-      <section class="page" aria-labelledby="about-title">
-	<div class="paper-layout">
-	  <header class="section-header about-header">
-	    <h2 id="about-title" class="section-title">
-	      <span lang="ja">自叙</span>
-	    </h2>
-	    <span class="section-subtitle">About me</span>
-	  </header>
-
-	  <div class="about-body">
-	    <section class="about-block" aria-labelledby="about-s1">
-	      <h3 id="about-s1" class="pillar-heading">§1. ごあいさつ</h3>
-	      <div class="intro-row">
-		<p class="intro-text">
-		  情報系の大学に通う学生、みやたるてぃです。
-		  大学進学を機にプログラミングを触りはじめ、
-		  現在は Linux と Emacs をいじっています。
-		  また読書が趣味で、岩波ジュニア新書、
-		  ちくまプリマー新書を通学中に読むのが幸せです。  
-		</p>
-		<img
-		  class="intro-logo"
-		  src={`${import.meta.env.BASE_URL}miyatarutyyy_logo_transparent.png`}
-		  alt="みやたるてぃ のロゴ"
-		  loading="lazy"
-		/>
-	      </div>
-	    </section>
-
-	    <section class="about-block" aria-labelledby="about-s2">
-	      <h3 id="about-s2" class="pillar-heading">§2. 情報系人文学徒とは</h3>
-	      <p>
-		もともと文系だった私は、情報系の学部に進学して理系の世界で過ごしていくうちに、
-		言葉や歴史への関心が心の中で残り続けていることに気づきました。
-		そこで「情報系人文学徒」を標榜してコンピューターサイエンスに強く、
-		言語学・歴史にも詳しい人間を目指して活動していきます
-		<span class="about-note">できるかな...</span>
-	      </p>
-	    </section>
-
-	    <section class="about-block" aria-labelledby="about-s3">
-	      <h3 id="about-s3" class="pillar-heading">§3. Archivyyy について</h3>
-	      <p>
-		コンピューターサイエンスを嗜みながら言語学や歴史を愛でる
-		当サイト"Archivyyy"は、そんな欲ばりな思考と活動の軌跡を記録するための
-		みやたるてぃ (Miyatarutyyy) のための保管庫 (Archive)となるサイトです</p>
-	    </section>
-	  </div>
-	</div>
-      </section>
-      
+      <AboutSection />
       <!-- Works -->
       <section class="page" aria-labelledby="works-title">
 	<div class="paper-layout">
